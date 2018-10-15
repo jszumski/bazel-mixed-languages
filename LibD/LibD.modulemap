@@ -1,0 +1,6 @@
+module LibD {
+  umbrella header "LibD.h"
+
+  export *
+  module * { export * }
+}
