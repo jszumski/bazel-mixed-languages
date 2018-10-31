@@ -10,6 +10,6 @@ public struct LibCStruct {
     public let property: String?
 }
 
-public class LibCClass {
+@objc public class LibCClass: NSObject {
 	public let property: Int = 0
 }

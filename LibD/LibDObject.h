@@ -1,6 +1,6 @@
-#import <Foundation/Foundation.h>
-#import <LibC/LibC.h>
-#import <LibB/LibB.h>
+#import "Foundation/Foundation.h"
+#import "LibC/LibC-Swift.h"
+#import "LibB/LibB.h"
 
 @interface LibDObject : NSObject
 

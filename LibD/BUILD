@@ -1,4 +1,5 @@
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+load("@build_bazel_rules_apple//apple:ios.bzl", "ios_unit_test")
 
 objc_library(
     name = "LibD_Shim",
@@ -7,10 +8,12 @@ objc_library(
         "//LibB:LibB", 
     ],
     hdrs = glob([
-        "LibD.h",
-        "**/*.h",
+        "*.h",
     ]),
-#	module_map = "LibD.modulemap",
+	includes = [
+		"."
+	],
+	module_map = "LibD.modulemap",
     visibility = ["//visibility:public"],
     enable_modules = True,
 )
@@ -25,7 +28,16 @@ swift_library(
     ],
     srcs = glob([
         "*.swift",
-    ]),
+    ], exclude = [
+		"LibDClassTests.swift"
+	]),
+	swiftc_inputs = [
+		"LibD.h"
+	],
+	copts = [
+		"-import-objc-header", "$(location LibD.h)",
+		"-Xcc", "-I.",
+	],
     visibility = ["//visibility:public"],
 )
 
@@ -37,13 +49,40 @@ objc_library(
         "//LibB:LibB", 
 	],
     hdrs = glob([
-        "LibD.h",
-        "**/*.h",
+        "*.h",
     ]),
     srcs = glob([
-        "**/*.m",
+        "*.m",
     ]),
-#    module_map = "LibD.modulemap",
+	includes = [
+		"."
+	],
+    module_map = "LibD.modulemap",
     visibility = ["//visibility:public"],
 	enable_modules = True,
+)
+
+
+
+
+
+swift_library(
+    name = "LibDTests",
+    module_name = "LibDTests",
+    deps = [
+    	":LibD",
+        ":LibD_ObjC", 
+    ],
+    srcs = glob([
+        "LibDClassTests.swift",
+    ]),
+    visibility = ["//visibility:public"],
+)
+
+ios_unit_test(
+	name = "LibDTests_Runner",
+    deps = [
+    	":LibDTests",
+    ],
+	minimum_os_version = "10.3"
 )
